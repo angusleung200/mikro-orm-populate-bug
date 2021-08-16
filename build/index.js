@@ -40,7 +40,7 @@ var core_1 = require("@mikro-orm/core");
 var product_entity_1 = require("./entities/product.entity");
 var tag_entity_1 = require("./entities/tag.entity");
 var main = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var orm, generator, products, tag, tag2, i, product, result, result2;
+    var orm, generator, products, tag, tag1, tag2, tag3, tag4, i, product, result, result2, result3;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, core_1.MikroORM.init()];
@@ -55,11 +55,14 @@ var main = function () { return __awaiter(void 0, void 0, void 0, function () {
                 _a.sent();
                 products = [];
                 tag = orm.em.create(tag_entity_1.Tag, { slug: "slug0" });
+                tag1 = orm.em.create(tag_entity_1.Tag, { slug: "slug1" });
                 tag2 = orm.em.create(tag_entity_1.Tag, { slug: "slug2" });
+                tag3 = orm.em.create(tag_entity_1.Tag, { slug: "slug3" });
+                tag4 = orm.em.create(tag_entity_1.Tag, { slug: "slug4" });
                 for (i = 0; i < 10; i++) {
                     product = orm.em.create(product_entity_1.Product, {
                         name: "product" + i,
-                        tags: [tag, tag2]
+                        tags: [tag, tag1, tag2, tag3, tag4]
                     });
                     products.push(product);
                 }
@@ -69,19 +72,23 @@ var main = function () { return __awaiter(void 0, void 0, void 0, function () {
                 return [4 /*yield*/, orm.em.clear()];
             case 5:
                 _a.sent();
-                return [4 /*yield*/, orm.em.getRepository(product_entity_1.Product).find({ tags: { slug: ["slug0"] } }, ['tags'], {}, 10, 8)];
+                return [4 /*yield*/, orm.em.getRepository(product_entity_1.Product).find({ tags: { slug: { $in: ["slug0"] } } }, ['tags'], {}, 10, 8)];
             case 6:
                 result = _a.sent();
-                console.log("---------If multiple product are found, there are tags:----------");
+                console.log("---------Only one tag here  :----------");
                 console.log(result[0].tags);
                 return [4 /*yield*/, orm.em.clear()];
             case 7:
                 _a.sent();
-                return [4 /*yield*/, orm.em.getRepository(product_entity_1.Product).find({ tags: { slug: ["slug0"] } }, ['tags'], {}, 10, 9)];
+                return [4 /*yield*/, orm.em.getRepository(product_entity_1.Product).find({ tags: { slug: ["slug0"] } }, [], {}, 10, 9)];
             case 8:
                 result2 = _a.sent();
-                console.log("---------If only one product is found, there has no tag:----------");
-                console.log(result2[0].tags);
+                return [4 /*yield*/, orm.em.populate(result2, ['tags'])];
+            case 9:
+                result3 = _a.sent();
+                console.log("---------If poplate in line 31, the result are correct:----------");
+                console.log("This is our expected result");
+                console.log(result3[0].tags);
                 return [2 /*return*/];
         }
     });
